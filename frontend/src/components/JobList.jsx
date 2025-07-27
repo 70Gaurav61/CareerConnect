@@ -1,6 +1,7 @@
 // src/components/JobList.jsx
 import React, { useEffect, useState } from "react";
 import JobCard from "./JobCard";
+import axios from "axios";
 
 const JobList = () => {
     const [jobs, setJobs] = useState([]);
@@ -8,11 +9,10 @@ const JobList = () => {
     useEffect(() => {
         const fetchJobs = async () => {
             try {
-                const res = await fetch("http://localhost:3000/api/v1/job/get", {
-                    credentials: "include",
+                const res = await axios.get("/api/v1/job/get", {
+                    withCredentials: true, // for cookies/JWTs
                 });
-                const data = await res.json();
-                setJobs(data.jobs);
+                setJobs(res.data.jobs);
             } catch (error) {
                 console.error("Failed to fetch jobs:", error);
             }
