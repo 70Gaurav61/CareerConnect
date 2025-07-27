@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Register = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    name: "",
+    fullname: "",
     email: "",
+    phoneNumber: "",
     password: "",
     confirmPassword: "",
+    role: "candidate", // default role
+    profilePhoto: null, // file input
   });
 
   const [loading, setLoading] = useState(false);
@@ -16,17 +20,15 @@ const Register = () => {
   const [success, setSuccess] = useState("");
 
   useEffect(() => {
-    // Optional: Redirect if user is already logged in
     const token = localStorage.getItem("token");
-    if (token) {
-      navigate("/"); // redirect to homepage or dashboard
-    }
+    if (token) navigate("/");
   }, [navigate]);
 
   const handleChange = (e) => {
+    const { name, value, files } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: files ? files[0] : value,
     }));
   };
 
@@ -41,29 +43,25 @@ const Register = () => {
 
     try {
       setLoading(true);
-
-      const res = await fetch("http://localhost:3000/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Registration failed");
+      const submitData = new FormData();
+      submitData.append("fullname", formData.fullname);
+      submitData.append("email", formData.email);
+      submitData.append("phoneNumber", formData.phoneNumber);
+      submitData.append("password", formData.password);
+      submitData.append("role", formData.role);
+      if (formData.profilePhoto) {
+        submitData.append("file", formData.profilePhoto);
       }
 
-      setSuccess("Registration successful! Redirecting to login...");
+      const res = await axios.post("http://localhost:3000/api/v1/user/register", submitData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      setSuccess("Registration successful! Redirecting...");
       setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
-      setError(err.message);
+      const message = err.response?.data?.message || "Registration failed";
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -75,23 +73,21 @@ const Register = () => {
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">Create Account</h2>
         <p className="text-center text-sm text-gray-500 mb-6">
           Already have an account?{" "}
-          <Link to="/login" className="text-purple-600 hover:underline">
-            Login here
-          </Link>
+          <Link to="/login" className="text-purple-600 hover:underline">Login here</Link>
         </p>
 
         {error && <p className="text-red-500 text-sm mb-4 text-center">{error}</p>}
         {success && <p className="text-green-600 text-sm mb-4 text-center">{success}</p>}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" encType="multipart/form-data">
           <input
             type="text"
-            name="name"
+            name="fullname"
             placeholder="Full Name"
-            value={formData.name}
+            value={formData.fullname}
             onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
             required
+            className="w-full px-4 py-2 border rounded-lg"
           />
           <input
             type="email"
@@ -99,8 +95,34 @@ const Register = () => {
             placeholder="Email Address"
             value={formData.email}
             onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
             required
+            className="w-full px-4 py-2 border rounded-lg"
+          />
+          <input
+            type="tel"
+            name="phoneNumber"
+            placeholder="Phone Number"
+            value={formData.phoneNumber}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 border rounded-lg"
+          />
+          <select
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 border rounded-lg"
+          >
+            <option value="student">Student</option>
+            <option value="recruiter">Recruiter</option>
+          </select>
+          <input
+            type="file"
+            name="profilePhoto"
+            onChange={handleChange}
+            accept="image/*"
+            className="w-full px-4 py-2 border rounded-lg"
           />
           <input
             type="password"
@@ -108,8 +130,8 @@ const Register = () => {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
             required
+            className="w-full px-4 py-2 border rounded-lg"
           />
           <input
             type="password"
@@ -117,8 +139,8 @@ const Register = () => {
             placeholder="Confirm Password"
             value={formData.confirmPassword}
             onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
             required
+            className="w-full px-4 py-2 border rounded-lg"
           />
           <button
             type="submit"

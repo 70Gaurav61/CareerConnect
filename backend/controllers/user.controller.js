@@ -16,7 +16,7 @@ export const register = async (req, res) => {
         };
 
         const file = req.file;
-        const cloudResponse = "";
+        let cloudResponse = "";
         if(file){   
             const fileUri = getDataUri(file);
             cloudResponse = await cloudinary.uploader.upload(fileUri.content);
