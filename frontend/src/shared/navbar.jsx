@@ -1,26 +1,24 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import axios from 'axios'
-import { USER_API_END_POINT } from '@/utils/constant'
-import { setUser } from '@/redux/authSlice'
-import { toast } from 'sonner'
+import React, { useState, useRef, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+// import { USER_API_END_POINT } from '../utils/constant';
+import { useAuth } from "../contexts/AuthContext";
+import { toast } from 'sonner';
 
-// Icons (Heroicons)
-import { ArrowRightOnRectangleIcon, UserIcon } from '@heroicons/react/24/outline'
+// Heroicons
+import { ArrowRightOnRectangleIcon, UserIcon } from '@heroicons/react/24/outline';
 
 const Navbar = () => {
-    const { user } = useSelector(store => store.auth);
-    const dispatch = useDispatch();
+    const { user, setUser } = useAuth();  // 👈 use context only
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const menuRef = useRef();
 
     const logoutHandler = async () => {
         try {
-            const res = await axios.get(`${USER_API_END_POINT}/logout`, { withCredentials: true });
+            const res = await axios.get(`http://localhost:3000/api/v1/user/logout`, { withCredentials: true });
             if (res.data.success) {
-                dispatch(setUser(null));
+                setUser(null); // update context state
                 navigate("/");
                 toast.success(res.data.message);
             }
@@ -28,9 +26,8 @@ const Navbar = () => {
             console.log(error);
             toast.error(error.response?.data?.message || "Logout failed");
         }
-    }
+    };
 
-    // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -44,24 +41,22 @@ const Navbar = () => {
     return (
         <div className='bg-white shadow'>
             <div className='flex items-center justify-between mx-auto max-w-7xl px-4 h-16'>
-                <h1 className='text-2xl font-bold'>Job<span className='text-[#F83002]'>Portal</span></h1>
+                <h1 className='text-2xl font-bold'>Career<span className='text-[#F83002]'>Connect</span></h1>
 
                 <div className='flex items-center gap-12'>
                     <ul className='flex font-medium items-center gap-5'>
-                        {
-                            user?.role === 'recruiter' ? (
-                                <>
-                                    <li><Link to="/admin/companies">Companies</Link></li>
-                                    <li><Link to="/admin/jobs">Jobs</Link></li>
-                                </>
-                            ) : (
-                                <>
-                                    <li><Link to="/">Home</Link></li>
-                                    <li><Link to="/jobs">Jobs</Link></li>
-                                    <li><Link to="/browse">Browse</Link></li>
-                                </>
-                            )
-                        }
+                        {user?.role === 'recruiter' ? (
+                            <>
+                                <li><Link to="/admin/companies">Companies</Link></li>
+                                <li><Link to="/admin/jobs">Jobs</Link></li>
+                            </>
+                        ) : (
+                            <>
+                                <li><Link to="/">Home</Link></li>
+                                <li><Link to="/jobs">Jobs</Link></li>
+                                <li><Link to="/browse">Browse</Link></li>
+                            </>
+                        )}
                     </ul>
 
                     {!user ? (
@@ -93,10 +88,16 @@ const Navbar = () => {
 
                                     <div className="flex flex-col text-gray-700 gap-2">
                                         {user?.role === 'student' && (
-                                            <Link to="/profile" className="flex items-center gap-2 hover:text-[#6A38C2]">
-                                                <UserIcon className="w-5 h-5" />
-                                                View Profile
-                                            </Link>
+                                            <>
+                                                <Link to="/profile" className="flex items-center gap-2 hover:text-[#6A38C2]">
+                                                    <UserIcon className="w-5 h-5" />
+                                                    View Profile
+                                                </Link>
+                                                <Link to="/update-profile" className="flex items-center gap-2 hover:text-[#6A38C2]">
+                                                    <UserIcon className="w-5 h-5" />
+                                                    Update Profile
+                                                </Link>
+                                            </>
                                         )}
                                         <button
                                             onClick={logoutHandler}
@@ -113,7 +114,7 @@ const Navbar = () => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Navbar
+export default Navbar;

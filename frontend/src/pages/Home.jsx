@@ -1,43 +1,28 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
+import JobList from "../components/JobList";
+import Navbar from "../shared/Navbar";
+import Footer from "../shared/Footer";
 
-function Home() {
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const res = await axios.get("http://localhost:3000/api/v1/jobs");
-        setJobs(res.data.jobs || []);
-        setLoading(false);
-      } catch (err) {
-        setError("Failed to load jobs.");
-        setLoading(false);
-      }
-    };
-
-    fetchJobs();
-  }, []);
+const Home = () => {
+  const filterTags = [
+    "Frontend Developer",
+    "Backend Developer",
+    "Data Engineer",
+    "Full Stack Developer",
+    "UI/UX Designer",
+    "Project Manager",
+    "DevOps Engineer",
+    "Mobile App Developer",
+    "QA Engineer",
+    "Cloud Architect"
+  ];
 
   return (
-    <div className="px-6 sm:px-10 lg:px-20 py-10 font-sans bg-gray-50 min-h-screen">
-      {/* Navbar */}
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">
-          Career<span className="text-red-600">Connect</span>
-        </h1>
-        <div className="flex gap-6 items-center text-sm">
-          <a href="#">Home</a>
-          <a href="#">Jobs</a>
-          <a href="#">Browse</a>
-          <img src="/assets/avatar.png" alt="profile" className="w-8 h-8 rounded-full" />
-        </div>
-      </div>
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
 
       {/* Hero Section */}
-      <div className="text-center mt-8">
+      <div className="bg-gray-50 py-16 text-center px-6 sm:px-10 lg:px-20">
         <p className="bg-red-100 text-red-600 px-4 py-1 inline-block rounded-full text-xs font-semibold">
           No. 1 Job Hunt Website
         </p>
@@ -45,9 +30,7 @@ function Home() {
           Search, Apply & <br /> Get Your <span className="text-purple-700">Dream Jobs</span>
         </h2>
         <p className="text-gray-500 mt-4 max-w-xl mx-auto">
-          Lorem ipsum dolor sit amet consectetur adipiscing elit. Possimus adipisci cupiditate cum.
-          <br />
-          Lorem ipsum dolor sit amet consectetur adipiscing elit.
+          Find the best job opportunities tailored for you. Discover top companies and elevate your career.
         </p>
 
         {/* Search Bar */}
@@ -57,54 +40,32 @@ function Home() {
             placeholder="Find your dream jobs"
             className="px-6 py-3 w-80 rounded-l-full border focus:outline-none shadow-md"
           />
-          <button className="bg-purple-700 px-6 py-3 text-white rounded-r-full shadow-md">
+          <button className="bg-purple-700 px-6 py-3 text-white rounded-r-full shadow-md hover:cursor-pointer">
             🔍
           </button>
         </div>
-      </div>
 
-      {/* Filter Tags */}
-      <div className="flex justify-center gap-4 mt-10 flex-wrap">
-        {["Frontend Developer", "Backend Developer", "Data Engineer"].map((role) => (
-          <button
-            key={role}
-            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm font-medium shadow-sm"
-          >
-            {role}
-          </button>
-        ))}
-      </div>
-
-      {/* Job Listings */}
-      <div className="mt-16">
-        <h3 className="text-xl font-bold mb-6">
-          <span className="text-purple-700">Latest and Top</span> Job Openings
-        </h3>
-
-        {loading ? (
-          <p className="text-center text-gray-500">Loading jobs...</p>
-        ) : error ? (
-          <p className="text-center text-red-500">{error}</p>
-        ) : jobs.length === 0 ? (
-          <p className="text-center text-gray-500">No jobs available.</p>
-        ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {jobs.map((job) => (
-              <div
-                key={job._id}
-                className="border rounded-xl p-4 shadow hover:shadow-md transition bg-white"
+        {/* Filter Tags */}
+        <div className="mt-10 overflow-x-auto whitespace-nowrap px-4">
+          <div className="inline-flex gap-4">
+            {filterTags.map((role) => (
+              <button
+                key={role}
+                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm font-medium shadow-sm whitespace-nowrap"
               >
-                <h4 className="text-lg font-semibold text-gray-800">{job.title}</h4>
-                <p className="text-sm text-gray-500">{job.company}</p>
-                <p className="mt-2 text-sm text-gray-600 line-clamp-3">{job.description}</p>
-                <div className="mt-4 text-sm text-purple-700">{job.location}</div>
-              </div>
+                {role}
+              </button>
             ))}
           </div>
-        )}
+        </div>
       </div>
+
+      {/* Job List Section */}
+      <JobList />
+
+      <Footer />
     </div>
   );
-}
+};
 
 export default Home;
