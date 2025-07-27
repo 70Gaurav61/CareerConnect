@@ -9,7 +9,7 @@ const JobList = () => {
     useEffect(() => {
         const fetchJobs = async () => {
             try {
-                const res = await axios.get("/api/v1/job/get", {
+                const res = await axios.get("http://localhost:3000/api/v1/job/get", {
                     withCredentials: true, // for cookies/JWTs
                 });
                 setJobs(res.data.jobs);
