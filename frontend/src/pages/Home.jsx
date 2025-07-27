@@ -1,8 +1,28 @@
-import { useState } from "react"
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function Home() {
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/api/v1/jobs");
+        setJobs(res.data.jobs || []);
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to load jobs.");
+        setLoading(false);
+      }
+    };
+
+    fetchJobs();
+  }, []);
+
   return (
-    <div className="px-6 sm:px-10 lg:px-20 py-10 font-sans">
+    <div className="px-6 sm:px-10 lg:px-20 py-10 font-sans bg-gray-50 min-h-screen">
       {/* Navbar */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold">
@@ -55,15 +75,36 @@ function Home() {
         ))}
       </div>
 
-      {/* Job Listings Section */}
+      {/* Job Listings */}
       <div className="mt-16">
         <h3 className="text-xl font-bold mb-6">
           <span className="text-purple-700">Latest and Top</span> Job Openings
         </h3>
-        {/* Add job cards here */}
+
+        {loading ? (
+          <p className="text-center text-gray-500">Loading jobs...</p>
+        ) : error ? (
+          <p className="text-center text-red-500">{error}</p>
+        ) : jobs.length === 0 ? (
+          <p className="text-center text-gray-500">No jobs available.</p>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {jobs.map((job) => (
+              <div
+                key={job._id}
+                className="border rounded-xl p-4 shadow hover:shadow-md transition bg-white"
+              >
+                <h4 className="text-lg font-semibold text-gray-800">{job.title}</h4>
+                <p className="text-sm text-gray-500">{job.company}</p>
+                <p className="mt-2 text-sm text-gray-600 line-clamp-3">{job.description}</p>
+                <div className="mt-4 text-sm text-purple-700">{job.location}</div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;
