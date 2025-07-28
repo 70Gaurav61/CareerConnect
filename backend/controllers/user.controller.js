@@ -49,6 +49,10 @@ export const register = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false
+        });
     }
 }
 
@@ -105,6 +109,10 @@ export const login = async (req, res) => {
         })
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false
+        });
     }
 }
 
@@ -116,6 +124,10 @@ export const logout = async (req, res) => {
         })
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false
+        });
     }
 }
 
@@ -172,5 +184,28 @@ export const updateProfile = async (req, res) => {
         })
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false
+        });
+    }
+}
+
+export const getProfile = async (req, res) => {
+    try {
+        const user = req.user;
+        console.log(user)
+        // Remove sensitive fields like password
+        const { password, ...safeUser } = user._doc;
+
+        res.status(200).json({
+        success: true,
+        user: safeUser,
+        });
+    } catch (error) {
+        res.status(500).json({
+        success: false,
+        message: "Failed to fetch user profile",
+        });
     }
 }
