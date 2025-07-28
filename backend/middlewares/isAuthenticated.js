@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { User } from "../models/user.model.js";
 
 const isAuthenticated = async (req, res, next) => {
     try {
@@ -16,7 +17,10 @@ const isAuthenticated = async (req, res, next) => {
                 success:false
             })
         };
-        req.id = decode.userId;
+        
+        const user = await User.findById(decode.userId);
+        req.id = user._id;
+        req.user = user;
         next();
     } catch (error) {
         console.log("Authentication error:", error.message);
