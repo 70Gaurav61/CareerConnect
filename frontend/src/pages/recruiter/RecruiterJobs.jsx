@@ -1,0 +1,102 @@
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import axios from "axios";
+
+const RecruiterJobs = () => {
+  const navigate = useNavigate();
+  const [search, setSearch] = useState("");
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      setLoading(true);
+      setError("");
+
+      try {
+        const token = localStorage.getItem("careerConnectToken"); // or "careerConnectUser"
+        const res = await axios.get("http://localhost:3000/api/jobs/recruiter", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setJobs(res.data.jobs || []);
+      } catch (err) {
+        setError("Failed to fetch jobs.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobs();
+  }, []);
+
+  const filteredJobs = jobs.filter(
+    (job) =>
+      job.company.toLowerCase().includes(search.toLowerCase()) ||
+      job.role.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-6">
+        <input
+          type="text"
+          placeholder="Filter by company name & role"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-1/3 border border-gray-300 rounded px-4 py-2"
+        />
+        <button
+          onClick={() => navigate("/recruiter/post-job")}
+          className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
+        >
+          New Job
+        </button>
+      </div>
+
+      {loading ? (
+        <p>Loading jobs...</p>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : (
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="text-left border-b">
+              <th className="pb-2">Company Name</th>
+              <th className="pb-2">Role</th>
+              <th className="pb-2">Date</th>
+              <th className="pb-2">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredJobs.length > 0 ? (
+              filteredJobs.map((job) => (
+                <tr key={job._id} className="border-b">
+                  <td className="py-3">{job.company}</td>
+                  <td className="py-3 text-blue-600 underline cursor-pointer">
+                    {job.role}
+                  </td>
+                  <td className="py-3">{new Date(job.createdAt).toLocaleDateString()}</td>
+                  <td className="py-3">⋮</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4" className="py-6 text-center text-gray-500">
+                  No jobs found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      )}
+
+      <p className="mt-4 text-gray-500">A list of your recently posted jobs</p>
+    </div>
+  );
+};
+
+export default RecruiterJobs;

@@ -22,7 +22,7 @@ const Login = () => {
         //console.log("Login successful")
         setUser(data.user);
         if (role === "recruiter") {
-          navigate("/recruiter/dashboard")
+          navigate("/recruiter/companies")
         } else {
           navigate("/home")
         }
