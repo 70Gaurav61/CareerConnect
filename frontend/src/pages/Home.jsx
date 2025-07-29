@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useAuth } from "../contexts/AuthContext"; //  import context
 
 function Home() {
+  const { user } = useAuth(); //  get current logged-in user
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -28,11 +30,25 @@ function Home() {
         <h1 className="text-2xl font-bold">
           Career<span className="text-red-600">Connect</span>
         </h1>
+
         <div className="flex gap-6 items-center text-sm">
           <a href="#">Home</a>
           <a href="#">Jobs</a>
           <a href="#">Browse</a>
-          <img src="/assets/avatar.png" alt="profile" className="w-8 h-8 rounded-full" />
+          {user ? (
+            <>
+              <span className="font-semibold">{user.name}</span>
+              <img
+                src={user.avatar || "/assets/avatar.png"} // fallback if no avatar
+                alt="profile"
+                className="w-8 h-8 rounded-full"
+              />
+            </>
+          ) : (
+            <a href="/login" className="text-purple-700 font-medium">
+              Login
+            </a>
+          )}
         </div>
       </div>
 
@@ -45,9 +61,7 @@ function Home() {
           Search, Apply & <br /> Get Your <span className="text-purple-700">Dream Jobs</span>
         </h2>
         <p className="text-gray-500 mt-4 max-w-xl mx-auto">
-          Lorem ipsum dolor sit amet consectetur adipiscing elit. Possimus adipisci cupiditate cum.
-          <br />
-          Lorem ipsum dolor sit amet consectetur adipiscing elit.
+          Welcome {user?.name || "Guest"}, find jobs that fit your skills and goals.
         </p>
 
         {/* Search Bar */}
