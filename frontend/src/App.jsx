@@ -4,6 +4,7 @@ import Register from "./pages/Register"
 import Login from "./pages/Login"
 import Home from "./pages/Home" // if you have one
 import ViewProfile from "./pages/ViewProfile"
+import UpdateProfile from "./pages/UpdateProfile"
 import "./App.css"
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
         <Route path="/profile" element={<ViewProfile />} />
+        <Route path="/update-profile" element={<UpdateProfile />} />
       </Routes>
     </Router>
   )

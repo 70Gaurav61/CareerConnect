@@ -2,17 +2,17 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../shared/Navbar";
 import Footer from "../shared/Footer";
+import { Link } from "react-router-dom";
 
 const ViewProfile = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch full profile
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const res = await axios.get("http://localhost:3000/api/v1/user/profile", {
-          withCredentials: true, // ensures cookie-based auth works
+          withCredentials: true,
         });
         setUser(res.data.user);
       } catch (err) {
@@ -48,16 +48,26 @@ const ViewProfile = () => {
     );
   }
 
-const { fullname, email, role, phoneNumber, createdAt, profile } = user;
+  const { fullname, email, role, phoneNumber, createdAt, profile } = user;
 
   return (
     <>
       <Navbar />
       <div className="min-h-screen bg-gray-100 py-10 px-4 flex justify-center">
-        <div className="w-full max-w-2xl bg-white p-8 rounded-2xl shadow-lg">
+        <div className="w-full max-w-2xl bg-white p-8 rounded-2xl shadow-lg relative">
+          {/* Update Profile Icon */}
+          <Link
+            to="/update-profile"
+            className="absolute top-4 right-4 text-blue-600 hover:text-blue-800 text-lg font-semibold"
+            title="Update Profile"
+          >
+            ✏️
+          </Link>
+
           <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
             User Profile
           </h1>
+
           {profile?.profilePhoto && (
             <div className="flex justify-center mb-6">
               <img
@@ -74,14 +84,31 @@ const { fullname, email, role, phoneNumber, createdAt, profile } = user;
             <ProfileRow label="Role" value={role} />
             <ProfileRow label="Phone Number" value={phoneNumber} />
             <ProfileRow label="Bio" value={profile?.bio} />
-            <ProfileRow label="Skills" value={profile?.skills?.join(", ")} />
-            <ProfileRow label="Resume" value={
-              profile?.resume ? (
-                <a href={profile.resume} className="text-blue-600 underline" target="_blank" rel="noopener noreferrer">
-                  {profile.resumeOriginalName || "View Resume"}
-                </a>
-              ) : "N/A"
-            } />
+            <ProfileRow
+              label="Skills"
+              value={
+                profile?.skills && profile.skills.length > 0
+                  ? profile.skills.join(", ")
+                  : "N/A"
+              }
+            />
+            <ProfileRow
+              label="Resume"
+              value={
+                profile?.resume ? (
+                  <a
+                    href={profile.resume}
+                    className="text-blue-600 underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {profile.resumeOriginalName || "View Resume"}
+                  </a>
+                ) : (
+                  "N/A"
+                )
+              }
+            />
             <ProfileRow
               label="Joined On"
               value={new Date(createdAt).toLocaleDateString()}
