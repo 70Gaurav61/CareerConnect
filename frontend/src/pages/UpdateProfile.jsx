@@ -25,8 +25,8 @@ const UpdateProfile = () => {
         });
         const { fullname, phoneNumber, profile } = res.data.user;
         setFormData({
-          fullname,
-          phoneNumber,
+          fullname: fullname,
+          phoneNumber: phoneNumber,
           profilePhoto: null,
           resume: null,
           bio: profile?.bio || "",
@@ -72,7 +72,7 @@ const UpdateProfile = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      navigate("/view-profile");
+      navigate("/profile");
     } catch (err) {
       console.error("Error updating profile:", err);
     }

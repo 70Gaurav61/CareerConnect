@@ -133,19 +133,18 @@ export const logout = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
     try {
-        const { fullname, email, phoneNumber, bio, skills } = req.body;
+        const { fullname, phoneNumber, bio, skills } = req.body;
         
-        const file = req.file;
-        const fileUri = getDataUri(file);
-        const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
-
+        
+        
+        
         let skillsArray;
         if(skills){
             skillsArray = skills.split(",");
         }
         const userId = req.id; // middleware authentication
         let user = await User.findById(userId);
-
+        
         if (!user) {
             return res.status(400).json({
                 message: "User not found.",
@@ -154,19 +153,37 @@ export const updateProfile = async (req, res) => {
         }
         // updating data
         if(fullname) user.fullname = fullname
-        if(email) user.email = email
+        // if(email) user.email = email
         if(phoneNumber)  user.phoneNumber = phoneNumber
         if(bio) user.profile.bio = bio
         if(skills) user.profile.skills = skillsArray
-
-        if(cloudResponse){
-            user.profile.resume = cloudResponse.secure_url
-            user.profile.resumeOriginalName = file.originalname //save original file name
-        }
-      
         
+        const file = req.files?.resume?.[0];
+        if (file) {
+            const fileUri = getDataUri(file);
+            const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+            // console.log("req.files.resume =>", req.files?.resume);
 
+            if (cloudResponse?.secure_url) {
+                user.profile.resume = cloudResponse.secure_url;
+                user.profile.resumeOriginalName = file.originalname;
+            }
+        }
+        // console.log("Updated resume URL:", user.profile.resume);
+        // console.log("Updated resume URL:", user.profile.resumeOriginalName);
+        
+        const photoFile = req.files?.profilePhoto?.[0];
+        if (photoFile) {
+            const photoUri = getDataUri(photoFile);
+            const photoResponse = await cloudinary.uploader.upload(photoUri.content);
+            user.profile.profilePhoto = photoResponse?.secure_url || "";
+        }        
+
+
+        // console.log("Updating user profile with resume:", user.profile);
         await user.save();
+// console.log("User saved successfully");
+
 
         user = {
             _id: user._id,
@@ -194,7 +211,7 @@ export const updateProfile = async (req, res) => {
 export const getProfile = async (req, res) => {
     try {
         const user = req.user;
-        console.log(user)
+        // console.log(user)
         // Remove sensitive fields like password
         const { password, ...safeUser } = user._doc;
 
