@@ -11,6 +11,7 @@ export const registerCompany = async (req, res) => {
                 success: false
             });
         }
+        console.log("Company name:", companyName);
         let company = await Company.findOne({ name: companyName });
         if (company) {
             return res.status(400).json({
@@ -74,7 +75,7 @@ export const updateCompany = async (req, res) => {
  
         const file = req.file;
         const fileUri = getDataUri(file);
-        const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+        const cloudResponse = await cloudinary.uploader.upload(fileUri.content, {folder : "files"});
         const logo = cloudResponse.secure_url;
     
         const updateData = { name, description, website, location, logo };

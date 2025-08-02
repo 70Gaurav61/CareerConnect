@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 const CompanySetup = () => {
@@ -13,6 +13,7 @@ const CompanySetup = () => {
 
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { id } = useParams(); // Get company ID from URL
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -33,20 +34,16 @@ const CompanySetup = () => {
         form.append(key, formData[key]);
       }
 
-      const token = localStorage.getItem("token");
-
-      await axios.post("http://localhost:5173/api/v1/companies", form, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
+      await axios.put(`http://localhost:3000/api/v1/company/update/${id}`, form, {
+        
+        withCredentials: true, // if backend uses cookies
       });
 
-      alert("Company registered successfully");
+      alert("Company updated successfully");
       navigate("/recruiter/jobs");
     } catch (err) {
       console.error(err);
-      alert("Error creating company");
+      alert("Error updating company");
     } finally {
       setSubmitting(false);
     }
@@ -112,17 +109,16 @@ const CompanySetup = () => {
         </div>
 
         <button
-  type="submit"
-  disabled={submitting}
-  className={`mt-6 w-full py-3 rounded-2xl font-semibold text-white text-lg transition ${
-    submitting
-      ? "bg-gray-400 cursor-not-allowed"
-      : "bg-[#101828] hover:bg-[#1f2a38]"
-  }`}
->
-  {submitting ? "Updating..." : "Update"}
-</button>
-
+          type="submit"
+          disabled={submitting}
+          className={`mt-6 w-full py-3 rounded-2xl font-semibold text-white text-lg transition ${
+            submitting
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-[#101828] hover:bg-[#1f2a38]"
+          }`}
+        >
+          {submitting ? "Updating..." : "Update"}
+        </button>
       </form>
     </div>
   );

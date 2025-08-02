@@ -24,7 +24,7 @@ function App() {
         <Route path="/register" element={<Register />} />
 
         {/* Recruiter Routes */}
-        <Route path="/recruiter/company-setup" element={<CompanySetup />} />
+        <Route path="/recruiter/company-setup/:id" element={<CompanySetup />} />
         <Route path="/recruiter/company/register" element={<CreateCompany />} />
         <Route path="/recruiter/companies" element={<RecruiterCompanies />} />
         <Route path="/recruiter/jobs" element={<RecruiterJobs />} />

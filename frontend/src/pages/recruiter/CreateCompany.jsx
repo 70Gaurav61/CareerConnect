@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const CreateCompany = () => {
-  const [companyName, setCompanyName] = useState("");
+  const [Name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -12,17 +12,24 @@ const CreateCompany = () => {
 
     try {
       setLoading(true);
-      const userId = JSON.parse(localStorage.getItem("careerConnectUser"))._id;
+      const user = JSON.parse(localStorage.getItem("careerConnectUser"));
+      if (!user?._id) throw new Error("User not found");
 
-      await axios.post("http://localhost:3000/api/v1/companies", {
-        name: companyName,
-        userId,
+      console.log("one");
+      await axios.post("http://localhost:3000/api/v1/company/register", {
+        companyName: Name,
+        userId: user._id,
+      },
+      {
+        withCredentials: true, // Ensure cookies are sent with the request
       });
 
-      // ✅ Navigate to company setup after successful update
-      navigate("/recruiter/company-setup");
+      // console.log("two");
+      const companyId = res.data.company._id; 
+      navigate("/recruiter/company-setup/${companyId}"); // Navigate to company setup with the new company ID
     } catch (error) {
-      console.error("Company creation failed", error.response?.data?.message || error.message);
+      console.error("Company creation failed:", error.response?.data?.message || error.message);
+      alert("Error creating company. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -49,8 +56,8 @@ const CreateCompany = () => {
         <input
           id="companyName"
           type="text"
-          value={companyName}
-          onChange={(e) => setCompanyName(e.target.value)}
+          value={Name}
+          onChange={(e) => setName(e.target.value)}
           className="mt-1 mb-4 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-black"
           placeholder="Microsoft"
           required
@@ -60,7 +67,7 @@ const CreateCompany = () => {
           <button
             type="button"
             className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-black"
-            onClick={() => navigate("/recruiter/jobs")} // ✅ Cancel -> Recruiter Jobs
+            onClick={() => navigate("/recruiter/companies")} // ✅ Cancel → /recruiter/companies
           >
             Cancel
           </button>
@@ -69,7 +76,7 @@ const CreateCompany = () => {
             className="px-6 py-2 rounded-lg bg-black text-white hover:bg-gray-800 disabled:opacity-60"
             disabled={loading}
           >
-            {loading ? "Saving..." : "Continue"} {/* ✅ Continue -> Company Setup */}
+            {loading ? "Saving..." : "Continue"} 
           </button>
         </div>
       </form>
