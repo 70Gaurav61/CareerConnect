@@ -3,6 +3,7 @@ import axios from "axios";
 import Navbar from "../shared/Navbar";
 import Footer from "../shared/Footer";
 import { Link } from "react-router-dom";
+import { PencilIcon } from '@heroicons/react/24/outline';
 
 const ViewProfile = () => {
   const [user, setUser] = useState(null);
@@ -61,7 +62,8 @@ const ViewProfile = () => {
             className="absolute top-4 right-4 text-blue-600 hover:text-blue-800 text-lg font-semibold"
             title="Update Profile"
           >
-            ✏️
+            <PencilIcon className="h-5 w-5 text-gray-600 hover:text-gray-800 cursor-pointer" />
+
           </Link>
 
           <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">

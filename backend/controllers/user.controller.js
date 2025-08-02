@@ -19,7 +19,7 @@ export const register = async (req, res) => {
         let cloudResponse = "";
         if(file){   
             const fileUri = getDataUri(file);
-            cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+            cloudResponse = await cloudinary.uploader.upload(fileUri.content, { folder: "files" });
         }
         
 
@@ -161,7 +161,7 @@ export const updateProfile = async (req, res) => {
         const file = req.files?.resume?.[0];
         if (file) {
             const fileUri = getDataUri(file);
-            const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+            const cloudResponse = await cloudinary.uploader.upload(fileUri.content, { folder: "files" });
             // console.log("req.files.resume =>", req.files?.resume);
 
             if (cloudResponse?.secure_url) {
@@ -175,7 +175,7 @@ export const updateProfile = async (req, res) => {
         const photoFile = req.files?.profilePhoto?.[0];
         if (photoFile) {
             const photoUri = getDataUri(photoFile);
-            const photoResponse = await cloudinary.uploader.upload(photoUri.content);
+            const photoResponse = await cloudinary.uploader.upload(photoUri.content, { folder: "files" });
             user.profile.profilePhoto = photoResponse?.secure_url || "";
         }        
 

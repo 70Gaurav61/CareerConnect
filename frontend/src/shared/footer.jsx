@@ -7,8 +7,8 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-center">
           {/* Branding */}
           <div className="mb-4 md:mb-0 text-center md:text-left">
-            <h2 className="text-xl font-bold text-gray-800">Job Hunt</h2>
-            <p className="text-sm text-gray-500">© 2024 Your Company. All rights reserved.</p>
+            <h2 className="text-xl font-bold text-gray-800">CareerConnect</h2>
+            <p className="text-sm text-gray-500">© 2025 Your Company. All rights reserved.</p>
           </div>
 
           {/* Social Icons */}

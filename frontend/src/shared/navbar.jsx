@@ -88,16 +88,12 @@ const Navbar = () => {
 
                                     <div className="flex flex-col text-gray-700 gap-2">
                                         {user?.role === 'student' && (
-                                            <>
-                                                <Link to="/profile" className="flex items-center gap-2 hover:text-[#6A38C2]">
-                                                    <UserIcon className="w-5 h-5" />
-                                                    View Profile
-                                                </Link>
-                                                <Link to="/update-profile" className="flex items-center gap-2 hover:text-[#6A38C2]">
-                                                    <UserIcon className="w-5 h-5" />
-                                                    Update Profile
-                                                </Link>
-                                            </>
+            
+                                            <Link to="/profile" className="flex items-center gap-2 hover:text-[#6A38C2]">
+                                                <UserIcon className="w-5 h-5" />
+                                                View Profile
+                                            </Link>
+                                            
                                         )}
                                         <button
                                             onClick={logoutHandler}
