@@ -9,7 +9,7 @@ const RecruiterJobs = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [dropdownOpen, setDropdownOpen] = useState(null); // stores job ID whose menu is open
+  const [dropdownOpen, setDropdownOpen] = useState(null);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -19,9 +19,7 @@ const RecruiterJobs = () => {
       try {
         const token = localStorage.getItem("careerConnectToken");
         const res = await axios.get("http://localhost:3000/api/v1/job/getadminjobs", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          withCredentials: true,
         });
         setJobs(res.data.jobs || []);
       } catch (err) {
@@ -37,22 +35,26 @@ const RecruiterJobs = () => {
 
   const filteredJobs = jobs.filter(
     (job) =>
-      job.company.toLowerCase().includes(search.toLowerCase()) ||
-      job.role.toLowerCase().includes(search.toLowerCase())
-  );
-
+      {
+        return job.company?.name?.toLowerCase().includes(search.toLowerCase()) ||
+        job.title?.toLowerCase().includes(search.toLowerCase())
+      
+      }
+    );
+  // console.log("Filtered Jobs:", filteredJobs);
+  
   const handleEdit = (jobId) => {
     navigate(`/recruiter/edit-job/${jobId}`);
   };
 
   const handleViewApplicants = (jobId) => {
-    navigate(`/recruiter/applicants/${jobId}`);
+    navigate("/");
   };
 
   return (
-    
     <div className="p-6">
-      <Navbar/><br/>
+      <Navbar />
+      <br />
       <div className="flex justify-between items-center mb-6">
         <input
           type="text"
@@ -87,9 +89,9 @@ const RecruiterJobs = () => {
             {filteredJobs.length > 0 ? (
               filteredJobs.map((job) => (
                 <tr key={job._id} className="border-b relative">
-                  <td className="py-3">{job.company}</td>
-                  <td className="py-3 text-blue-600 underline cursor-pointer">
-                    {job.role}
+                  <td className="py-3">{job.company?.name || "N/A"}</td>
+                  <td className="py-3">
+                    {job.title}
                   </td>
                   <td className="py-3">
                     {new Date(job.createdAt).toLocaleDateString()}
@@ -111,13 +113,13 @@ const RecruiterJobs = () => {
                             onClick={() => handleEdit(job._id)}
                             className="w-full text-left px-4 py-2 hover:bg-gray-100"
                           >
-                            ✏️ Edit
+                             Edit
                           </button>
                           <button
                             onClick={() => handleViewApplicants(job._id)}
                             className="w-full text-left px-4 py-2 hover:bg-gray-100"
                           >
-                            👁 Applicants
+                            Applicants
                           </button>
                         </div>
                       )}

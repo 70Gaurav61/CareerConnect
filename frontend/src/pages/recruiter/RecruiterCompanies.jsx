@@ -12,7 +12,7 @@ const RecruiterCompanies = () => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const res = await axios.get("/company/get", { withCredentials: true });
+        const res = await axios.get("http://localhost:3000/api/v1/company/get", { withCredentials: true });
         setCompanies(res.data.companies || []);
         setFiltered(res.data.companies || []);
       } catch (err) {

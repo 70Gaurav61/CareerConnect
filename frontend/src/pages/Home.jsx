@@ -45,7 +45,10 @@ function Home() {
   return (
     <div className="flex flex-col min-h-screen">
 
-      {user?.role === "candidate" ? (
+      {user?.role === "recruiter" ? (
+        <RecruiterCompanies />
+        
+      ) : (
         <>
           <Navbar />
           {/* Hero Section */}
@@ -92,8 +95,6 @@ function Home() {
           {/* Job List Section */}
           <JobList />
         </>
-      ) : (
-        <RecruiterCompanies />
       )}
       <Footer />
     </div>
