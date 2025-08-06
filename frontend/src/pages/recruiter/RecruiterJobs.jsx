@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Navbar from "../../shared/Navbar";
 
 const RecruiterJobs = () => {
   const navigate = useNavigate();
@@ -8,6 +9,7 @@ const RecruiterJobs = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(null); // stores job ID whose menu is open
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -15,8 +17,8 @@ const RecruiterJobs = () => {
       setError("");
 
       try {
-        const token = localStorage.getItem("careerConnectToken"); // or "careerConnectUser"
-        const res = await axios.get("http://localhost:3000/api/jobs/recruiter", {
+        const token = localStorage.getItem("careerConnectToken");
+        const res = await axios.get("http://localhost:3000/api/v1/job/getadminjobs", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -39,8 +41,18 @@ const RecruiterJobs = () => {
       job.role.toLowerCase().includes(search.toLowerCase())
   );
 
+  const handleEdit = (jobId) => {
+    navigate(`/recruiter/edit-job/${jobId}`);
+  };
+
+  const handleViewApplicants = (jobId) => {
+    navigate(`/recruiter/applicants/${jobId}`);
+  };
+
   return (
+    
     <div className="p-6">
+      <Navbar/><br/>
       <div className="flex justify-between items-center mb-6">
         <input
           type="text"
@@ -53,7 +65,7 @@ const RecruiterJobs = () => {
           onClick={() => navigate("/recruiter/post-job")}
           className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
         >
-          New Job
+          New Jobs
         </button>
       </div>
 
@@ -74,13 +86,43 @@ const RecruiterJobs = () => {
           <tbody>
             {filteredJobs.length > 0 ? (
               filteredJobs.map((job) => (
-                <tr key={job._id} className="border-b">
+                <tr key={job._id} className="border-b relative">
                   <td className="py-3">{job.company}</td>
                   <td className="py-3 text-blue-600 underline cursor-pointer">
                     {job.role}
                   </td>
-                  <td className="py-3">{new Date(job.createdAt).toLocaleDateString()}</td>
-                  <td className="py-3">⋮</td>
+                  <td className="py-3">
+                    {new Date(job.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="py-3">
+                    <div className="relative inline-block text-left">
+                      <button
+                        onClick={() =>
+                          setDropdownOpen(dropdownOpen === job._id ? null : job._id)
+                        }
+                        className="text-xl px-2 cursor-pointer"
+                      >
+                        ⋮
+                      </button>
+
+                      {dropdownOpen === job._id && (
+                        <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow z-10">
+                          <button
+                            onClick={() => handleEdit(job._id)}
+                            className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                          >
+                            ✏️ Edit
+                          </button>
+                          <button
+                            onClick={() => handleViewApplicants(job._id)}
+                            className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                          >
+                            👁 Applicants
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </td>
                 </tr>
               ))
             ) : (
@@ -94,7 +136,7 @@ const RecruiterJobs = () => {
         </table>
       )}
 
-      <p className="mt-4 text-gray-500">A list of your recently posted jobs</p>
+      <p className="mt-4 text-gray-500">A list of your recent posted jobs</p>
     </div>
   );
 };
