@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../../shared/Navbar";
 
 const RecruiterCompanies = () => {
   const [companies, setCompanies] = useState([]);
@@ -33,6 +34,7 @@ const RecruiterCompanies = () => {
 
   return (
     <div className="p-8">
+      <Navbar /><br/>
       <div className="flex justify-between items-center mb-6">
         <input
           type="text"

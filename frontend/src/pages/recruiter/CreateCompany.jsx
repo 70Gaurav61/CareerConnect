@@ -3,9 +3,25 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const CreateCompany = () => {
-  const [Name, setName] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    website: "",
+    location: "",
+    file: null, // matches multer().single("file")
+  });
+
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    if (name === "file") {
+      setFormData({ ...formData, file: files[0] }); // image file
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,21 +31,26 @@ const CreateCompany = () => {
       const user = JSON.parse(localStorage.getItem("careerConnectUser"));
       if (!user?._id) throw new Error("User not found");
 
-      console.log("one");
-      await axios.post("http://localhost:3000/api/v1/company/register", {
-        companyName: Name,
-        userId: user._id,
-      },
-      {
-        withCredentials: true, // Ensure cookies are sent with the request
+      // Prepare multipart form data
+      const form = new FormData();
+      for (const key in formData) {
+        form.append(key, formData[key]);
+      }
+      form.append("userId", user._id); // required in backend
+
+      const res = await axios.post("http://localhost:3000/api/v1/company/register", form, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
-      // console.log("two");
-      const companyId = res.data.company._id; 
-      navigate("/recruiter/company-setup/${companyId}"); // Navigate to company setup with the new company ID
+      // const companyId = res.data.company._id;
+      localStorage.setItem("companyId", res.data.company._id);
+      navigate("/recruiter/post-job");
     } catch (error) {
-      console.error("Company creation failed:", error.response?.data?.message || error.message);
-      alert("Error creating company. Please try again.");
+      alert(`Company creation failed: ${error.response?.data?.message || "An error occurred"}`);
+      console.log("Error:", error);
     } finally {
       setLoading(false);
     }
@@ -40,43 +61,66 @@ const CreateCompany = () => {
       <form
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-xl shadow-md w-full max-w-xl"
+        encType="multipart/form-data"
       >
-        <h2 className="text-2xl font-bold mb-2">Your Company Name</h2>
-        <p className="text-gray-500 mb-6">
-          What would you like to give your company name? You can change this
-          later.
-        </p>
+        <h2 className="text-2xl font-bold mb-2">Register Company</h2>
 
-        <label
-          htmlFor="companyName"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Company Name
-        </label>
-        <input
-          id="companyName"
-          type="text"
-          value={Name}
-          onChange={(e) => setName(e.target.value)}
-          className="mt-1 mb-4 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-black"
-          placeholder="Microsoft"
-          required
-        />
+        <div className="space-y-4">
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Company Name"
+            required
+            className="w-full border px-4 py-2 rounded-md"
+          />
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            placeholder="Description"
+            className="w-full border px-4 py-2 rounded-md"
+          />
+          <input
+            type="text"
+            name="website"
+            value={formData.website}
+            onChange={handleChange}
+            placeholder="Website"
+            className="w-full border px-4 py-2 rounded-md"
+          />
+          <input
+            type="text"
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+            placeholder="Location"
+            className="w-full border px-4 py-2 rounded-md"
+          />
+          <input
+            type="file"
+            name="file" // must match multer().single("file")
+            accept="image/*"
+            onChange={handleChange}
+            className="w-full border px-4 py-2 rounded-md"
+          />
+        </div>
 
-        <div className="flex gap-4">
+        <div className="flex gap-4 mt-6">
           <button
             type="button"
+            onClick={() => navigate("/recruiter/companies")}
             className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-black"
-            onClick={() => navigate("/recruiter/companies")} // ✅ Cancel → /recruiter/companies
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-6 py-2 rounded-lg bg-black text-white hover:bg-gray-800 disabled:opacity-60"
             disabled={loading}
+            className="px-6 py-2 rounded-lg bg-black text-white hover:bg-gray-800 disabled:opacity-60"
           >
-            {loading ? "Saving..." : "Continue"} 
+            {loading ? "Saving..." : "Continue"}
           </button>
         </div>
       </form>
