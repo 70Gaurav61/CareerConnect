@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Navbar from "../shared/Navbar";
 
 const AppliedJobs = () => {
   const [applications, setApplications] = useState([]);
@@ -20,6 +21,8 @@ const AppliedJobs = () => {
   }, []);
 
   return (
+    <>
+    <Navbar/>
     <div className="max-w-5xl mx-auto px-4 py-8">
       <h2 className="text-2xl font-semibold mb-6">Your Applications</h2>
 
@@ -53,6 +56,7 @@ const AppliedJobs = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 
