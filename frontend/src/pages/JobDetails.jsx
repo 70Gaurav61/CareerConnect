@@ -76,11 +76,11 @@ const JobDetails = () => {
         </div>
         <div className="flex items-center gap-2">
           <CalendarDaysIcon className="h-5 w-5 text-gray-600" />
-          <p><span className="font-semibold">Experience:</span> {job.experienceLevel || "N/A"} years</p>
+          <p><span className="font-semibold">Experience:</span> {job.experienceLevel == 0 ? "Fresher" : `${job.experienceLevel} years`} </p>
         </div>
         <div className="flex items-center gap-2">
           <CurrencyRupeeIcon className="h-5 w-5 text-gray-600" />
-          <p><span className="font-semibold">Salary:</span> ₹{job.salary || "N/A"}</p>
+          <p><span className="font-semibold">Salary:</span> {job.salary == 0 ? "Unpaid" : `₹${job.salary}`}</p>
         </div>
         <div className="flex items-center gap-2">
           <p><span className="font-semibold">Position:</span> {job.position || "N/A"}</p>
