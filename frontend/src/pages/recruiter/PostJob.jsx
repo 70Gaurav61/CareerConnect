@@ -1,11 +1,9 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const PostJob = () => {
-  // const { id: companyId } = useParams(); // companyId from URL
   const companyId = localStorage.getItem("companyId");
-
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -19,8 +17,35 @@ const PostJob = () => {
     position: "",
   });
 
+  const [errors, setErrors] = useState({
+    salary: "",
+    experienceLevel: "",
+    position: "",
+  });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    // Validation rules
+    if (name === "salary" || name === "experienceLevel") {
+      if (value !== "" && Number(value) < 0) {
+        setErrors((prev) => ({ ...prev, [name]: "Cannot be negative" }));
+      } else {
+        setErrors((prev) => ({ ...prev, [name]: "" }));
+      }
+    }
+
+    if (name === "position") {
+      if (value !== "" && Number(value) <= 0) {
+        setErrors((prev) => ({
+          ...prev,
+          position: "Must be greater than 0",
+        }));
+      } else {
+        setErrors((prev) => ({ ...prev, position: "" }));
+      }
+    }
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -29,27 +54,35 @@ const PostJob = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Block submission if there are any errors
+    if (Object.values(errors).some((err) => err)) {
+      alert("Please fix the errors before submitting.");
+      return;
+    }
+
     try {
       const user = JSON.parse(localStorage.getItem("careerConnectUser"));
       if (!user?._id) throw new Error("User not found");
 
-      // Prepare job payload
+      // Ensure default values to pass backend validation
       const jobData = {
         title: formData.title,
         description: formData.description,
         requirements: formData.requirements,
-        salary: Number(formData.salary),
+        salary: formData.salary === "" ? 0 : Number(formData.salary),
         location: formData.location,
         jobType: formData.jobType,
-        experience: Number(formData.experienceLevel), 
-        position: Number(formData.position),
-        companyId: companyId, 
+        experience: formData.experienceLevel === "" ? 0 : Number(formData.experienceLevel),
+        position: formData.position === "" ? 1 : Number(formData.position),
+        companyId: companyId,
       };
 
-
-      const res = await axios.post("http://localhost:3000/api/v1/job/post", jobData, {
-        withCredentials: true,
-      });
+      const res = await axios.post(
+        "http://localhost:3000/api/v1/job/post",
+        jobData,
+        { withCredentials: true }
+      );
 
       if (res.status === 201) {
         alert("Job posted successfully!");
@@ -94,25 +127,35 @@ const PostJob = () => {
           className="w-full px-4 py-2 border rounded"
         />
 
-        <input
-          type="number"
-          name="salary"
-          value={formData.salary}
-          onChange={handleChange}
-          placeholder="Salary"
-          required
-          className="w-full px-4 py-2 border rounded"
-        />
+        <div>
+          <input
+            type="number"
+            name="salary"
+            value={formData.salary}
+            onChange={handleChange}
+            placeholder="Salary"
+            min="0"
+            className="w-full px-4 py-2 border rounded"
+          />
+          {errors.salary && (
+            <p className="text-red-500 text-sm">{errors.salary}</p>
+          )}
+        </div>
 
-        <input
-          type="number"
-          name="experienceLevel"
-          value={formData.experienceLevel}
-          onChange={handleChange}
-          placeholder="Experience Level (in years)"
-          required
-          className="w-full px-4 py-2 border rounded"
-        />
+        <div>
+          <input
+            type="number"
+            name="experienceLevel"
+            value={formData.experienceLevel}
+            onChange={handleChange}
+            placeholder="Experience Level (in years)"
+            min="0"
+            className="w-full px-4 py-2 border rounded"
+          />
+          {errors.experienceLevel && (
+            <p className="text-red-500 text-sm">{errors.experienceLevel}</p>
+          )}
+        </div>
 
         <input
           type="text"
@@ -138,15 +181,20 @@ const PostJob = () => {
           <option value="Contract">Contract</option>
         </select>
 
-        <input
-          type="number"
-          name="position"
-          value={formData.position}
-          onChange={handleChange}
-          placeholder="Number of Positions"
-          required
-          className="w-full px-4 py-2 border rounded"
-        />
+        <div>
+          <input
+            type="number"
+            name="position"
+            value={formData.position}
+            onChange={handleChange}
+            placeholder="Number of Positions"
+            min="1"
+            className="w-full px-4 py-2 border rounded"
+          />
+          {errors.position && (
+            <p className="text-red-500 text-sm">{errors.position}</p>
+          )}
+        </div>
 
         <button
           type="submit"
