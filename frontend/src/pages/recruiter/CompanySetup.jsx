@@ -31,7 +31,13 @@ const CompanySetup = () => {
     try {
       const form = new FormData();
       for (const key in formData) {
-        form.append(key, formData[key]);
+        // console.log(`Uploading ${key}:`, formData[key]);
+        if(key === "logo" && formData[key]){
+          form.append("file",formData.logo)
+        }
+        else{
+          form.append(key, formData[key]);
+        }
       }
 
       await axios.put(`http://localhost:3000/api/v1/company/update/${id}`, form, {
@@ -40,7 +46,7 @@ const CompanySetup = () => {
       });
 
       alert("Company updated successfully");
-      navigate("/recruiter/jobs");
+      navigate("/");
     } catch (err) {
       console.error(err);
       alert("Error updating company");

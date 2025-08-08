@@ -109,12 +109,12 @@ const RecruiterJobs = () => {
 
                       {dropdownOpen === job._id && (
                         <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow z-10">
-                          <button
+                          {/* <button
                             onClick={() => handleEdit(job._id)}
                             className="w-full text-left px-4 py-2 hover:bg-gray-100"
                           >
                              Edit
-                          </button>
+                          </button> */}
                           <button
                             onClick={() => handleViewApplicants(job._id)}
                             className="w-full text-left px-4 py-2 hover:bg-gray-100"
