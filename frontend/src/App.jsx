@@ -17,6 +17,8 @@ import Home from "./pages/Home";
 
 import ViewProfile from "./pages/ViewProfile"
 import UpdateProfile from "./pages/UpdateProfile"
+import AppliedJobs from './pages/AppliedJobs';
+import BrowseJobs from "./pages/BrowseJobs";
 import "./App.css"
 //>>>>>>> feature
 
@@ -43,6 +45,8 @@ function App() {
         <Route path="/profile" element={<ViewProfile />} />
         <Route path="/update-profile" element={<UpdateProfile />} />
 
+        <Route path="/jobs" element={<AppliedJobs />} />
+        <Route path="/browse" element={<BrowseJobs />} />
       </Routes>
     </Router>
   );

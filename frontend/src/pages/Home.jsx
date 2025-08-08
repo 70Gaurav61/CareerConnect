@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import JobList from "../components/JobList";
 import Navbar from "../shared/Navbar";
 import Footer from "../shared/Footer";
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContext"; 
 import { useNavigate } from "react-router-dom";
@@ -73,7 +74,7 @@ function Home() {
             className="px-6 py-3 w-80 rounded-l-full border focus:outline-none shadow-md"
           />
           <button className="bg-purple-700 px-6 py-3 text-white rounded-r-full shadow-md hover:cursor-pointer">
-            🔍
+            <MagnifyingGlassIcon className="h-5 w-5 text-white" />
           </button>
         </div>
 

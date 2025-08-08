@@ -1,12 +1,44 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   BriefcaseIcon,
   MapPinIcon,
   CalendarDaysIcon,
   CurrencyRupeeIcon,
 } from "@heroicons/react/24/outline";
+import axios from "axios";
 
 const JobCard = ({ job }) => {
+  const [applied, setApplied] = useState(false);
+
+  useEffect(() => {
+    const fetchApplications = async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/api/v1/application/get", {
+          withCredentials: true,
+        });
+        const appliedJobs = res.data.application.map(app => app.job._id);
+        setApplied(appliedJobs.includes(job._id));
+      } catch (err) {
+        console.error("Error checking application status:", err);
+      }
+    };
+
+    fetchApplications();
+  }, [job._id]);
+
+  const handleApply = async () => {
+    try {
+      await axios.post(
+        `http://localhost:3000/api/v1/application/apply/${job._id}`,
+        {},
+        { withCredentials: true }
+      );
+      setApplied(true);
+    } catch (err) {
+      console.error("Failed to apply:", err);
+    }
+  };
+
   return (
     <div className="bg-white shadow-md rounded-2xl p-5 hover:shadow-lg transition-all duration-300 border border-gray-200">
       <div className="flex justify-between items-start">
@@ -55,8 +87,16 @@ const JobCard = ({ job }) => {
         <button className="text-sm border border-primary bg-primary text-primary px-4 py-2 rounded-lg hover:bg-cyan-400 hover:cursor-pointer hover:text-white transition">
           View Details
         </button>
-        <button className="text-sm border border-primary text-primary px-4 py-2 rounded-lg hover:bg-emerald-400 hover:cursor-pointer hover:text-white transition">
-          Apply Now
+        <button
+          className={`text-sm border px-4 py-2 rounded-lg transition ${
+            applied
+              ? "border-gray-400 text-gray-400 bg-gray-100 cursor-not-allowed"
+              : "border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
+          }`}
+          onClick={handleApply}
+          disabled={applied}
+        >
+          {applied ? "Applied" : "Apply Now"}
         </button>
       </div>
     </div>
