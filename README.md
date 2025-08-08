@@ -1,4 +1,4 @@
-#CareerConnect – MERN Stack Job Portal
+##CareerConnect – MERN Stack Job Portal
 
 #Description:
 CareerConnect is a full-stack web application that bridges the gap between job seekers and recruiters. It allows users to register, build professional profiles, browse jobs, apply for opportunities, and track application statuses. Recruiters can post jobs and manage applicants with role-based access.
