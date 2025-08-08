@@ -5,6 +5,7 @@ import Login from "./pages/Login"
 import Home from "./pages/Home" // if you have one
 import ViewProfile from "./pages/ViewProfile"
 import UpdateProfile from "./pages/UpdateProfile"
+import AppliedJobs from './pages/AppliedJobs';
 import "./App.css"
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/profile" element={<ViewProfile />} />
         <Route path="/update-profile" element={<UpdateProfile />} />
+        <Route path="/jobs" element={<AppliedJobs />} />
       </Routes>
     </Router>
   )
