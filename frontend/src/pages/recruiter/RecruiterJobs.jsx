@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "../../shared/Navbar";
+import { toast } from "react-toastify"; // Import toast
 
 const RecruiterJobs = () => {
   const navigate = useNavigate();
@@ -17,13 +18,13 @@ const RecruiterJobs = () => {
       setError("");
 
       try {
-        const token = localStorage.getItem("careerConnectToken");
         const res = await axios.get("http://localhost:3000/api/v1/job/getadminjobs", {
           withCredentials: true,
         });
         setJobs(res.data.jobs || []);
       } catch (err) {
         setError("Failed to fetch jobs.");
+        toast.error("Failed to fetch jobs.");  // Show toast on error
         console.error(err);
       } finally {
         setLoading(false);
@@ -35,14 +36,10 @@ const RecruiterJobs = () => {
 
   const filteredJobs = jobs.filter(
     (job) =>
-      {
-        return job.company?.name?.toLowerCase().includes(search.toLowerCase()) ||
-        job.title?.toLowerCase().includes(search.toLowerCase())
-      
-      }
-    );
-  // console.log("Filtered Jobs:", filteredJobs);
-  
+      job.company?.name?.toLowerCase().includes(search.toLowerCase()) ||
+      job.title?.toLowerCase().includes(search.toLowerCase())
+  );
+
   const handleEdit = (jobId) => {
     navigate(`/recruiter/edit-job/${jobId}`);
   };
@@ -90,12 +87,8 @@ const RecruiterJobs = () => {
               filteredJobs.map((job) => (
                 <tr key={job._id} className="border-b relative">
                   <td className="py-3">{job.company?.name || "N/A"}</td>
-                  <td className="py-3">
-                    {job.title}
-                  </td>
-                  <td className="py-3">
-                    {new Date(job.createdAt).toLocaleDateString()}
-                  </td>
+                  <td className="py-3">{job.title}</td>
+                  <td className="py-3">{new Date(job.createdAt).toLocaleDateString()}</td>
                   <td className="py-3">
                     <div className="relative inline-block text-left">
                       <button
@@ -109,11 +102,12 @@ const RecruiterJobs = () => {
 
                       {dropdownOpen === job._id && (
                         <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow z-10">
+                          {/* Uncomment if Edit is needed */}
                           {/* <button
                             onClick={() => handleEdit(job._id)}
                             className="w-full text-left px-4 py-2 hover:bg-gray-100"
                           >
-                             Edit
+                            Edit
                           </button> */}
                           <button
                             onClick={() => handleViewApplicants(job._id)}

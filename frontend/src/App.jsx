@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-//<<<<<<< HEAD
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
@@ -14,14 +15,12 @@ import ApplicantsPage from "./pages/recruiter/ApplicantsPage";
 
 // User Profile Pages
 import Home from "./pages/Home";
-
-import ViewProfile from "./pages/ViewProfile"
-import UpdateProfile from "./pages/UpdateProfile"
+import ViewProfile from "./pages/ViewProfile";
+import UpdateProfile from "./pages/UpdateProfile";
 import AppliedJobs from './pages/AppliedJobs';
 import BrowseJobs from "./pages/BrowseJobs";
 import JobDetails from "./pages/JobDetails";
-import "./App.css"
-//>>>>>>> feature
+import "./App.css";
 
 function App() {
   return (
@@ -42,17 +41,28 @@ function App() {
         <Route path="/recruiter/post-job" element={<PostJob />} />
         <Route path="/recruiter/applicants/:jobId" element={<ApplicantsPage />} />
 
-
+        {/* User Profile */}
         <Route path="/profile" element={<ViewProfile />} />
         <Route path="/update-profile" element={<UpdateProfile />} />
 
+        {/* Job Routes */}
         <Route path="/jobs" element={<AppliedJobs />} />
         <Route path="/job/:id" element={<JobDetails />} />
         <Route path="/browse" element={<BrowseJobs />} />
       </Routes>
+
+      {/* ToastContainer must be rendered once to display notifications */}
+      <ToastContainer
+        position="top-right"
+        autoClose={2500}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        draggable
+      />
     </Router>
   );
 }
 
 export default App;
-  

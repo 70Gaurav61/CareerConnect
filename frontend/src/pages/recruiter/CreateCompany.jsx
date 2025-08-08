@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const CreateCompany = () => {
   const [formData, setFormData] = useState({
@@ -45,11 +46,11 @@ const CreateCompany = () => {
         },
       });
 
-      // const companyId = res.data.company._id;
       localStorage.setItem("companyId", res.data.company._id);
+      toast.success("Company created successfully");
       navigate("/recruiter/post-job");
     } catch (error) {
-      alert(`Company creation failed: ${error.response?.data?.message || "An error occurred"}`);
+      toast.error(`Company creation failed: ${error.response?.data?.message || "An error occurred"}`);
       console.log("Error:", error);
     } finally {
       setLoading(false);

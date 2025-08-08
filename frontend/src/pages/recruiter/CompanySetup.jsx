@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const CompanySetup = () => {
   const [formData, setFormData] = useState({
@@ -31,25 +32,24 @@ const CompanySetup = () => {
     try {
       const form = new FormData();
       for (const key in formData) {
-        // console.log(`Uploading ${key}:`, formData[key]);
-        if(key === "logo"){
-          form.append("file",formData.logo)
-        }
-        else{
+        if (key === "logo") {
+          form.append("file", formData.logo);
+        } else {
           form.append(key, formData[key]);
         }
       }
 
-      await axios.put(`http://localhost:3000/api/v1/company/update/${id}`, form, {
-        
-        withCredentials: true, // if backend uses cookies
-      });
+      await axios.put(
+        `http://localhost:3000/api/v1/company/update/${id}`,
+        form,
+        { withCredentials: true }
+      );
 
-      alert("Company updated successfully");
+      toast.success("Company updated successfully");
       navigate("/");
     } catch (err) {
       console.error(err);
-      alert("Error updating company");
+      toast.error("Error updating company");
     } finally {
       setSubmitting(false);
     }

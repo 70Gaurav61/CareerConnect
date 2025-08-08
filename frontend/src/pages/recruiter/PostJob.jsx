@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const PostJob = () => {
   const companyId = localStorage.getItem("companyId");
@@ -57,7 +59,7 @@ const PostJob = () => {
 
     // Block submission if there are any errors
     if (Object.values(errors).some((err) => err)) {
-      alert("Please fix the errors before submitting.");
+      toast.error("Please fix the errors before submitting.");
       return;
     }
 
@@ -85,12 +87,12 @@ const PostJob = () => {
       );
 
       if (res.status === 201) {
-        alert("Job posted successfully!");
+        toast.success("Job posted successfully!");
         navigate("/recruiter/jobs");
       }
     } catch (err) {
       console.error("Failed to post job:", err);
-      alert(err.response?.data?.message || "Something went wrong. Try again.");
+      toast.error(err.response?.data?.message || "Something went wrong. Try again.");
     }
   };
 
