@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -11,7 +13,7 @@ const Register = () => {
     phoneNumber: "",
     password: "",
     confirmPassword: "",
-    role: "candidate", // default role
+    role: "student", // default role
     profilePhoto: null, // file input
   });
 
@@ -38,6 +40,7 @@ const Register = () => {
     setSuccess("");
 
     if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
       return setError("Passwords do not match");
     }
 
@@ -57,11 +60,13 @@ const Register = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      setSuccess("Registration successful! Redirecting...");
+      setSuccess(res.data.message);
+      toast.success(success);
       setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
       const message = err.response?.data?.message || "Registration failed";
-      setError(message);
+      toast.error(message);
+      // setError(message);
     } finally {
       setLoading(false);
     }

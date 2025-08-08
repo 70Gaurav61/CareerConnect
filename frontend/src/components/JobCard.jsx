@@ -7,6 +7,7 @@ import {
 } from "@heroicons/react/24/outline";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const JobCard = ({ job }) => {
   const navigate = useNavigate();
@@ -30,13 +31,15 @@ const JobCard = ({ job }) => {
 
   const handleApply = async () => {
     try {
-      await axios.post(
+      const res = await axios.post(
         `http://localhost:3000/api/v1/application/apply/${job._id}`,
         {},
         { withCredentials: true }
       );
+      toast.success(res.data.message || "Applied Successfully");
       setApplied(true);
     } catch (err) {
+      toast.error(err.data.message);
       console.error("Failed to apply:", err);
     }
   };

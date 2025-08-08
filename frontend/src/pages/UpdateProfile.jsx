@@ -3,6 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../shared/Navbar";
 import Footer from "../shared/Footer";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const UpdateProfile = () => {
   const [formData, setFormData] = useState({
@@ -67,13 +69,14 @@ const UpdateProfile = () => {
       if (formData.profilePhoto) data.append("profilePhoto", formData.profilePhoto);
       if (formData.resume) data.append("resume", formData.resume);
 
-      await axios.put("http://localhost:3000/api/v1/user/update-profile", data, {
+      const res = await axios.put("http://localhost:3000/api/v1/user/update-profile", data, {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
       });
-
+      toast.success(res.data.message);
       navigate("/profile");
     } catch (err) {
+      toast.error(err.data.message);
       console.error("Error updating profile:", err);
     }
   };

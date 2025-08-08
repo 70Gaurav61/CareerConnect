@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import JobCard from "../components/JobCard";
 import { useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const BrowseJobs = () => {
   const [jobs, setJobs] = useState([]);
@@ -32,6 +34,7 @@ const BrowseJobs = () => {
       setJobs(fetchedJobs);
       setAllJobs(fetchedJobs);
     } catch (error) {
+      toast.error(error.data.message || "Server Error");
       console.error("Error fetching jobs:", error);
     }
   };

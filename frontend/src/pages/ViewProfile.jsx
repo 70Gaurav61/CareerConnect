@@ -4,6 +4,8 @@ import Navbar from "../shared/Navbar";
 import Footer from "../shared/Footer";
 import { Link } from "react-router-dom";
 import { PencilIcon } from '@heroicons/react/24/outline';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ViewProfile = () => {
   const [user, setUser] = useState(null);
@@ -17,6 +19,7 @@ const ViewProfile = () => {
         });
         setUser(res.data.user);
       } catch (err) {
+        toast.error(err.data.message || "Error fetching user");
         console.error("Error fetching profile:", err);
       } finally {
         setLoading(false);

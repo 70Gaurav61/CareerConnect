@@ -63,9 +63,6 @@ function Home() {
       <Navbar />
       {/* Hero Section */}
       <div className="bg-gray-50 py-16 text-center px-6 sm:px-10 lg:px-20">
-        <p className="bg-red-100 text-red-600 px-4 py-1 inline-block rounded-full text-xs font-semibold">
-          No. 1 Job Hunt Website
-        </p>
         <h2 className="text-4xl font-bold mt-4 leading-tight">
           Search, Apply & <br /> Get Your{" "}
           <span className="text-purple-700">Dream Jobs</span>

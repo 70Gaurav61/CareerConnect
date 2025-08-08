@@ -2,6 +2,8 @@ import { useState } from "react"
 import axios from "axios"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "../contexts/AuthContext";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
   const { setUser } = useAuth();
@@ -18,6 +20,7 @@ const Login = () => {
         { email, password, role },
         { withCredentials: true }
       )
+      toast.success(data.message);
       if (data.success) {
         //console.log("Login successful")
         setUser(data.user);

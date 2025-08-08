@@ -8,6 +8,9 @@ import {
   CurrencyRupeeIcon,
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const JobDetails = () => {
   const navigate = useNavigate();
@@ -31,6 +34,7 @@ const JobDetails = () => {
           )
         );
       } catch (err) {
+        toast.error("Error fetching job");
         console.error("Error fetching job:", err);
       } finally {
         setLoading(false);
@@ -50,7 +54,9 @@ const JobDetails = () => {
       if (res.data.success) {
         setApplied(true);
       }
+      toast.success(res.data.message);
     } catch (err) {
+      toast.error(err.data.message || "Error applying for job");
       console.error("Application failed:", err);
     }
   };
