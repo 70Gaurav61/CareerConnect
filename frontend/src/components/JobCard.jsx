@@ -6,8 +6,10 @@ import {
   CurrencyRupeeIcon,
 } from "@heroicons/react/24/outline";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const JobCard = ({ job }) => {
+  const navigate = useNavigate();
   const [applied, setApplied] = useState(false);
 
   useEffect(() => {
@@ -84,7 +86,10 @@ const JobCard = ({ job }) => {
       )}
 
       <div className="mt-5 flex gap-2">
-        <button className="text-sm border border-primary bg-primary text-primary px-4 py-2 rounded-lg hover:bg-cyan-400 hover:cursor-pointer hover:text-white transition">
+        <button 
+          className="text-sm border border-primary bg-primary text-primary px-4 py-2 rounded-lg hover:bg-cyan-400 hover:cursor-pointer hover:text-white transition"
+          onClick={() => navigate(`/job/${job._id}`)}
+        >
           View Details
         </button>
         <button
