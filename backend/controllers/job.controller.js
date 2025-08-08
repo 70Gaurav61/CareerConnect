@@ -73,7 +73,7 @@ export const getJobById = async (req, res) => {
                 success: false
             })
         };
-        return res.status(200).json({ job, success: true });
+        return res.status(200).json({ job, userId: req.id, success: true });
     } catch (error) {
         console.log(error);
     }

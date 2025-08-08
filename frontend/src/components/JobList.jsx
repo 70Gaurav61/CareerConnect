@@ -11,7 +11,7 @@ const JobList = () => {
                 const res = await axios.get("http://localhost:3000/api/v1/job/get", {
                     withCredentials: true, // for cookies/JWTs
                 });
-                setJobs(res.data.jobs);
+                setJobs(res.data.jobs.slice(0,6));
             } catch (error) {
                 console.error("Failed to fetch jobs:", error);
             }

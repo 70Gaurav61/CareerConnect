@@ -19,6 +19,7 @@ import ViewProfile from "./pages/ViewProfile"
 import UpdateProfile from "./pages/UpdateProfile"
 import AppliedJobs from './pages/AppliedJobs';
 import BrowseJobs from "./pages/BrowseJobs";
+import JobDetails from "./pages/JobDetails";
 import "./App.css"
 //>>>>>>> feature
 
@@ -46,6 +47,7 @@ function App() {
         <Route path="/update-profile" element={<UpdateProfile />} />
 
         <Route path="/jobs" element={<AppliedJobs />} />
+        <Route path="/job/:id" element={<JobDetails />} />
         <Route path="/browse" element={<BrowseJobs />} />
       </Routes>
     </Router>
