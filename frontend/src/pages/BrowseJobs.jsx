@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import JobCard from "../components/JobCard";
+import { useLocation } from "react-router-dom";
 
 const BrowseJobs = () => {
   const [jobs, setJobs] = useState([]);
@@ -11,13 +12,25 @@ const BrowseJobs = () => {
     salaryRange: [],
   });
 
+  const locationHook = useLocation();
+  const queryParams = new URLSearchParams(locationHook.search);
+  const searchQuery = queryParams.get("search")?.toLowerCase() || "";
+
   const fetchJobs = async () => {
     try {
       const res = await axios.get("http://localhost:3000/api/v1/job/get", {
         withCredentials: true,
       });
-      setJobs(res.data.jobs);
-      setAllJobs(res.data.jobs);
+      
+      let fetchedJobs = res.data.jobs;
+
+      if(searchQuery){
+        fetchedJobs = fetchedJobs.filter(job => 
+          job.title.toLowerCase().includes(searchQuery)
+        );
+      }
+      setJobs(fetchedJobs);
+      setAllJobs(fetchedJobs);
     } catch (error) {
       console.error("Error fetching jobs:", error);
     }

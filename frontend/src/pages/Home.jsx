@@ -1,11 +1,17 @@
-import React from "react";
+import { useState} from "react";
 import JobList from "../components/JobList";
 import Navbar from "../shared/Navbar";
 import Footer from "../shared/Footer";
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { useNavigate } from "react-router-dom";
+
 
 
 const Home = () => {
+
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
+
   const filterTags = [
     "Frontend Developer",
     "Backend Developer",
@@ -18,6 +24,11 @@ const Home = () => {
     "QA Engineer",
     "Cloud Architect"
   ];
+  const handleSearch = () => {
+    if (search.trim() !== "") {
+      navigate(`/browse?search=${encodeURIComponent(search.trim())}`);
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -39,10 +50,15 @@ const Home = () => {
         <div className="mt-8 flex justify-center">
           <input
             type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             placeholder="Find your dream jobs"
             className="px-6 py-3 w-80 rounded-l-full border focus:outline-none shadow-md"
           />
-          <button className="bg-purple-700 px-6 py-3 text-white rounded-r-full shadow-md hover:cursor-pointer">
+
+          <button 
+            onClick={handleSearch}
+            className="bg-purple-700 px-6 py-3 text-white rounded-r-full shadow-md hover:cursor-pointer">
             <MagnifyingGlassIcon className="h-5 w-5 text-white" />
           </button>
         </div>
@@ -53,6 +69,7 @@ const Home = () => {
             {filterTags.map((role) => (
               <button
                 key={role}
+                onClick={() => setSearch(role)}
                 className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm font-medium shadow-sm whitespace-nowrap"
               >
                 {role}
