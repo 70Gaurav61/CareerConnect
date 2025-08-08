@@ -48,7 +48,7 @@ const RecruiterJobs = () => {
   };
 
   const handleViewApplicants = (jobId) => {
-    navigate("/");
+    navigate(`/recruiter/applicants/${jobId}`);
   };
 
   return (

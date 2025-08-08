@@ -32,7 +32,7 @@ const CompanySetup = () => {
       const form = new FormData();
       for (const key in formData) {
         // console.log(`Uploading ${key}:`, formData[key]);
-        if(key === "logo" && formData[key]){
+        if(key === "logo"){
           form.append("file",formData.logo)
         }
         else{

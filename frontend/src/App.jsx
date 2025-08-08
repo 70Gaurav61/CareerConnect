@@ -10,6 +10,7 @@ import CreateCompany from "./pages/recruiter/CreateCompany";
 import RecruiterCompanies from "./pages/recruiter/RecruiterCompanies";
 import RecruiterJobs from "./pages/recruiter/RecruiterJobs";
 import PostJob from "./pages/recruiter/PostJob";
+import ApplicantsPage from "./pages/recruiter/ApplicantsPage";
 
 // User Profile Pages
 import Home from "./pages/Home";
@@ -36,6 +37,8 @@ function App() {
         <Route path="/recruiter/companies" element={<RecruiterCompanies />} />
         <Route path="/recruiter/jobs" element={<RecruiterJobs />} />
         <Route path="/recruiter/post-job" element={<PostJob />} />
+        <Route path="/recruiter/applicants/:jobId" element={<ApplicantsPage />} />
+
 
         <Route path="/profile" element={<ViewProfile />} />
         <Route path="/update-profile" element={<UpdateProfile />} />
