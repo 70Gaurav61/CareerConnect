@@ -49,69 +49,90 @@ const RecruiterJobs = () => {
   };
 
   return (
-    <div className="p-6">
-      <Navbar />
-      <br />
-      <div className="flex justify-between items-center mb-6">
-        <input
-          type="text"
-          placeholder="Filter by company name & role"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-1/3 border border-gray-300 rounded px-4 py-2"
-        />
-        <button
-          onClick={() => navigate("/recruiter/post-job")}
-          className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
-        >
-          New Jobs
-        </button>
-      </div>
+  <div className="p-6 bg-gradient-to-br from-indigo-50 to-white min-h-screen transition-colors duration-500">
+    <Navbar />
 
-      {loading ? (
-        <p>Loading jobs...</p>
-      ) : error ? (
-        <p className="text-red-500">{error}</p>
-      ) : (
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="text-left border-b">
-              <th className="pb-2">Company Name</th>
-              <th className="pb-2">Role</th>
-              <th className="pb-2">Date</th>
-              <th className="pb-2">Action</th>
+    <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+      <input
+        type="text"
+        placeholder="Filter by company name & role"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="w-full md:w-1/3 border border-gray-300 rounded-lg px-4 py-2
+                   focus:outline-none focus:ring-2 focus:ring-indigo-300
+                   transition duration-200 shadow-sm"
+      />
+      <button
+        onClick={() => navigate("/recruiter/post-job")}
+        className="bg-gradient-to-r from-blue-600 to-purple-600
+                   hover:from-blue-700 hover:to-purple-700
+                   text-white px-4 py-2 rounded-lg shadow-lg
+                   transform transition duration-200 hover:scale-105"
+      >
+        New Job
+      </button>
+    </div>
+
+    {loading ? (
+      <p className="text-gray-500 italic p-6 animate-pulse">Loading jobs...</p>
+    ) : error ? (
+      <p className="text-red-500 p-6">{error}</p>
+    ) : (
+      <div className="overflow-x-auto rounded-xl shadow-lg">
+        <table className="w-full text-left divide-y divide-gray-200
+                            bg-white bg-opacity-90 backdrop-filter backdrop-blur-sm">
+          <thead className="bg-gradient-to-r from-indigo-100 to-purple-100">
+            <tr>
+              <th className="py-3 px-5 text-sm font-semibold text-gray-700 uppercase">
+                Company Name
+              </th>
+              <th className="py-3 px-5 text-sm font-semibold text-gray-700 uppercase">
+                Role
+              </th>
+              <th className="py-3 px-5 text-sm font-semibold text-gray-700 uppercase">
+                Date
+              </th>
+              <th className="py-3 px-5 text-sm font-semibold text-gray-700 uppercase">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
             {filteredJobs.length > 0 ? (
-              filteredJobs.map((job) => (
-                <tr key={job._id} className="border-b relative">
-                  <td className="py-3">{job.company?.name || "N/A"}</td>
-                  <td className="py-3">{job.title}</td>
-                  <td className="py-3">{new Date(job.createdAt).toLocaleDateString()}</td>
-                  <td className="py-3">
+              filteredJobs.map((job, idx) => (
+                <tr
+                  key={job._id}
+                  className={`transition-transform duration-200 hover:scale-[1.02]
+                              hover:z-10 hover:shadow-lg cursor-pointer ${
+                                idx % 2 === 0 ? "bg-white" : "bg-gray-50"
+                              }`}
+                >
+                  <td className="py-4 px-5 text-gray-800">
+                    {job.company?.name || "N/A"}
+                  </td>
+                  <td className="py-4 px-5 text-gray-800">{job.title}</td>
+                  <td className="py-4 px-5 text-gray-800">
+                    {new Date(job.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="py-4 px-5">
                     <div className="relative inline-block text-left">
                       <button
                         onClick={() =>
                           setDropdownOpen(dropdownOpen === job._id ? null : job._id)
                         }
-                        className="text-xl px-2 cursor-pointer"
+                        className="text-gray-500 hover:text-gray-700
+                                   transition transform hover:scale-110"
                       >
                         ⋮
                       </button>
-
                       {dropdownOpen === job._id && (
-                        <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow z-10">
-                          {/* Uncomment if Edit is needed */}
-                          {/* <button
-                            onClick={() => handleEdit(job._id)}
-                            className="w-full text-left px-4 py-2 hover:bg-gray-100"
-                          >
-                            Edit
-                          </button> */}
+                        <div className="absolute right-0 mt-2 w-36
+                                        bg-white border border-gray-200
+                                        rounded-lg shadow-lg z-10">
                           <button
                             onClick={() => handleViewApplicants(job._id)}
-                            className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                            className="w-full text-left px-4 py-2
+                                       hover:bg-gray-100 transition duration-150"
                           >
                             Applicants
                           </button>
@@ -123,18 +144,26 @@ const RecruiterJobs = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="4" className="py-6 text-center text-gray-500">
-                  No jobs found
+                <td
+                  colSpan="4"
+                  className="py-6 text-center text-gray-500 italic animate-pulse"
+                >
+                  No jobs found — maybe time to post something new? 🚀
                 </td>
               </tr>
             )}
           </tbody>
         </table>
-      )}
+      </div>
+    )}
 
-      <p className="mt-4 text-gray-500">A list of your recent posted jobs</p>
-    </div>
-  );
+    <p className="mt-4 text-gray-500 italic">
+      A list of your recent posted jobs
+    </p>
+  </div>
+);
+
+
 };
 
 export default RecruiterJobs;
